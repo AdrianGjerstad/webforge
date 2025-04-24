@@ -14,14 +14,27 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-bazel_dep(
-    name = "abseil-cpp",
-    version = "20250127.1",
+cc_library(
+    name = "flags",
+    hdrs = ["flags.h"],
+    deps = [
+        "@abseil-cpp//absl/flags:flag",
+    ],
+    visibility = ["//webforge:__subpackages__"],
 )
 
-bazel_dep(
-    name = "googletest",
-    version = "1.16.0",
-    dev_dependency = True,
+cc_binary(
+    name = "webforge",
+    srcs = ["main.cc"],
+    deps = [
+        ":flags",
+        "@abseil-cpp//absl/flags:config",
+        "@abseil-cpp//absl/flags:flag",
+        "@abseil-cpp//absl/flags:parse",
+        "@abseil-cpp//absl/flags:usage",
+        "@abseil-cpp//absl/log:flags",
+        "@abseil-cpp//absl/log:initialize",
+        "@abseil-cpp//absl/log:log",
+    ],
 )
 
