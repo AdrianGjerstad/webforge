@@ -28,3 +28,13 @@ cc_proto_library(
     visibility = ["//visibility:public"],
 )
 
+cc_library(
+    name = "renderer",
+    srcs = ["renderer.cc"],
+    hdrs = ["renderer.h"],
+    deps = [
+        "//inja",
+    ],
+    visibility = ["//visibility:public"],
+)
+
