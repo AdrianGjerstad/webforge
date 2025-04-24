@@ -15,6 +15,18 @@
 #
 
 cc_library(
+    name = "file_log_sink",
+    srcs = ["file_log_sink.cc"],
+    hdrs = ["file_log_sink.h"],
+    deps = [
+        "@abseil-cpp//absl/log",
+        "@abseil-cpp//absl/log:log_sink",
+        "@abseil-cpp//absl/log:log_sink_registry",
+    ],
+    visibility = ["//webforge:__subpackages__"],
+)
+
+cc_library(
     name = "flags",
     hdrs = ["flags.h"],
     deps = [
@@ -27,14 +39,17 @@ cc_binary(
     name = "webforge",
     srcs = ["main.cc"],
     deps = [
+        ":file_log_sink",
         ":flags",
         "@abseil-cpp//absl/flags:config",
         "@abseil-cpp//absl/flags:flag",
         "@abseil-cpp//absl/flags:parse",
         "@abseil-cpp//absl/flags:usage",
+        "@abseil-cpp//absl/log",
         "@abseil-cpp//absl/log:flags",
         "@abseil-cpp//absl/log:initialize",
-        "@abseil-cpp//absl/log:log",
+        "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/strings:str_format",
     ],
 )
 

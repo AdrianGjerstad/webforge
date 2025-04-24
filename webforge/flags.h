@@ -28,7 +28,15 @@
 
 #include "absl/flags/declare.h"
 
+// Flags controlling files and file paths
 ABSL_DECLARE_FLAG(std::string, cd);
+ABSL_DECLARE_FLAG(std::string, out);
+ABSL_DECLARE_FLAG(std::string, depout);
+ABSL_DECLARE_FLAG(std::string, logfile);
+
+// Flags controlling processing pipelines and their parameters
+ABSL_DECLARE_FLAG(bool, render);
+ABSL_DECLARE_FLAG(bool, minify);
 
 #endif  // WEBFORGE_FLAGS_H_
 
