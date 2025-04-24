@@ -1,5 +1,5 @@
 # Copyright (C) 2025 Adrian Gjerstad
-# 
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -13,20 +13,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+# -----------------------------------------------------------------------------
+#
+# This file is an addition to the open-sourced and MIT-licensed pantor/inja. It
+# is not originally from that repository, but rather created for WebForge for
+# the purpose of use with Bazel.
+#
 
-bazel_dep(
-    name = "abseil-cpp",
-    version = "20250127.1",
-)
-
-bazel_dep(
-    name = "nlohmann_json",
-    version = "3.11.3",
-)
-
-bazel_dep(
-    name = "googletest",
-    version = "1.16.0",
-    dev_dependency = True,
+cc_library(
+    name = "inja",
+    hdrs = glob(["include/inja/*.hpp"]),
+    deps = [
+        "@nlohmann_json//:json",
+    ],
+    includes = ["include"],
+    visibility = ["//visibility:public"],
 )
 
