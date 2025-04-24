@@ -1,0 +1,51 @@
+// Copyright (C) 2025 Adrian Gjerstad
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+// -----------------------------------------------------------------------------
+// File: data.proto
+// -----------------------------------------------------------------------------
+//
+// This file defines the data structures used to pass variables into the core
+// for use at render-time.
+//
+// A rather critical component to the concept of rendering, data is a
+// foundational construct. Without it, there would be no reason to serve sites
+// that use WebForge non-statically. The trick is this: how do we get data into
+// a dynamically-rendered HTML page as safely as possibly with the potential for
+// that data to be private information?
+//
+// The CLI supports three different methods which are all abstracted down to the
+// message classes defined in this file. They are --pass_env, which passes
+// environment variables to the rendering process, --set, which passes command
+// line key-value pairs into the rendering process, and data piping. The latter
+// option is preferred for security, as any user with root privileged may spy on
+// the other two via /proc.
+//
+// It is assumed that in circumstances where several key-value pairs need to be
+// streamed, both the producer and consumer will use a binary version of
+// RecordIO to encapsulate each message. Each message will be a uint32 that
+// specifies the length, followed by the message itself.
+//
+
+syntax = "proto3";
+
+package wf.proto;
+
+// Holds a singular key value pair for use by WebForge.
+message Data {
+  string key = 2;
+  string value = 3;
+}
+
