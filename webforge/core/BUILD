@@ -56,3 +56,25 @@ cc_test(
     size = "small",
 )
 
+cc_library(
+    name = "minifier",
+    srcs = ["minifier.cc"],
+    hdrs = ["minifier.h"],
+    deps = [
+        "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/synchronization",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_test(
+    name = "minifier_test",
+    srcs = ["minifier_test.cc"],
+    deps = [
+        ":minifier",
+        "@abseil-cpp//absl/status",
+        "@googletest//:gtest",
+    ],
+    size = "small",
+)
+
