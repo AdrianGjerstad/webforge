@@ -43,9 +43,27 @@ syntax = "proto3";
 
 package wf.proto;
 
+// This is here because you can't have `repeated` inside a oneof
+message VectorValue {
+  repeated RenderValue vector = 2;
+}
+
+// Represents a value of an aribtrary type for use in 
+message RenderValue {
+  oneof value {
+    string text = 2;
+    int64 integer = 3;
+    double real = 4;
+    VectorValue vector = 5;
+  }
+}
+
 // Holds a singular key value pair for use by WebForge.
+//
+// Keys may be dot.delimited in order to produce objects. Arrays must be
+// specified as RenderValue type `vector`.
 message Data {
   string key = 2;
-  string value = 3;
+  RenderValue value = 3;
 }
 

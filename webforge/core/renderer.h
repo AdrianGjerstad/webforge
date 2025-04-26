@@ -33,9 +33,16 @@
 #ifndef WEBFORGE_CORE_RENDERER_H_
 #define WEBFORGE_CORE_RENDERER_H_
 
+#include <iostream>
 #include <string>
 
+#include "absl/container/flat_hash_map.h"
+#include "absl/status/status.h"
+#include "absl/status/statusor.h"
 #include <inja/inja.hpp>
+#include <nlohmann/json.hpp>
+
+#include "webforge/core/data.pb.h"
 
 namespace wf {
 
@@ -43,10 +50,39 @@ class Renderer {
 public:
   Renderer();
 
-  //std::string RenderComponent(const std::string& filename);
+  // Renders a component from an input stream using a set of data.
+  //
+  // The `key` is a unique value used to identify this *specific* root-level
+  // component. If two calls to Render using the same `key` are made, the
+  // `component` istream is ignored. Otherwise, `component` is the actual Jinja2
+  // template code in istream form.
+  absl::Status Render(const std::string& key,
+                      std::istream* component,
+                      const std::vector<wf::proto::Data>& data,
+                      std::ostream* output);
+
+  void FlushCache();
 
 private:
+  absl::Status ExpandRenderValue(nlohmann::json* json_value,
+                                 const wf::proto::RenderValue& value);
+
+  // Generates a nlohmann::json object for use with inja
+  absl::Status PopulateRenderPayload(nlohmann::json* payload,
+                                     const std::vector<wf::proto::Data>& data);
+
+  // Checks cache to see if template was already parsed, or parses it.
+  //
+  // This function may fail if the input template source is malformed in any way
+  // that causes it to fail parsing. No cache activity will result in errors.
+  absl::StatusOr<const inja::Template> CacheHitOrParse(
+    const std::string& key,
+    std::istream* is
+  );
+
   inja::Environment env_;
+
+  absl::flat_hash_map<std::string, inja::Template> template_cache_;
 };
 
 }
