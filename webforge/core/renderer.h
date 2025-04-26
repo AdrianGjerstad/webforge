@@ -33,6 +33,7 @@
 #ifndef WEBFORGE_CORE_RENDERER_H_
 #define WEBFORGE_CORE_RENDERER_H_
 
+#include <filesystem>
 #include <iostream>
 #include <string>
 
@@ -48,7 +49,7 @@ namespace wf {
 
 class Renderer {
 public:
-  Renderer();
+  Renderer(const std::filesystem::path& search_path = ".");
 
   // Renders a component from an input stream using a set of data.
   //

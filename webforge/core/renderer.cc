@@ -23,11 +23,14 @@
 
 #include "webforge/core/renderer.h"
 
+#include <filesystem>
+#include <fstream>
 #include <string>
 #include <vector>
 
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
+#include "absl/strings/str_format.h"
 #include "absl/strings/str_split.h"
 #include <inja/inja.hpp>
 #include <nlohmann/json.hpp>
@@ -36,8 +39,32 @@
 
 namespace wf {
 
-Renderer::Renderer() {
-  // Nothing to do.
+Renderer::Renderer(const std::filesystem::path& search_path) {
+  // Tell inja::Environment we want to be in charge of included/extended
+  // template lookups.
+  env_.set_search_included_templates_in_files(false);
+
+  env_.set_include_callback([this, search_path]
+                            (const std::filesystem::path& current_path,
+                             const std::string& name) {
+    // search_path + name or else throw (I hate throw but it is what it is)
+    std::filesystem::path new_path(search_path);
+    new_path /= name;
+
+    std::ifstream is(new_path.string());
+    if (!is.is_open()) {
+      throw inja::InjaError("file_error",
+        absl::StrFormat("no such template '%s'", name));
+    }
+
+    absl::StatusOr<const inja::Template> s_tmpl = CacheHitOrParse(name, &is);
+    if (!s_tmpl.ok()) {
+      throw inja::InjaError("parser_error",
+        std::string(s_tmpl.status().message()));
+    }
+
+    return s_tmpl.value();
+  });
 }
 
 absl::Status Renderer::Render(const std::string& key,
