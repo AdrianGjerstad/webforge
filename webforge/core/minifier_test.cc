@@ -35,11 +35,23 @@
 
 class MinifierTest : public testing::Test {
 protected:
+  void PrepareStringStreams(const std::string& input,
+                            std::istringstream* is,
+                            std::ostringstream* os) {
+    is->clear();
+    is->str(input);
+    os->clear();
+    os->str("");
+  }
+
   wf::Minifier minifier_;
 };
 
 TEST_F(MinifierTest, CanMinifyHtml) {
-  std::istringstream is(
+  std::istringstream is;
+  std::ostringstream os;
+
+  PrepareStringStreams(
     "<!doctype html>\n"
     "<html>\n"
     "  <head>\n"
@@ -49,8 +61,7 @@ TEST_F(MinifierTest, CanMinifyHtml) {
     "    <h1>Hello World</h1>\n"
     "    <p>Hello World</p>\n"
     "  </body>\n"
-    "</html>\n");
-  std::ostringstream os;
+    "</html>\n", &is, &os);
 
   absl::Status s = minifier_.Minify(wf::SourceType::kHtml, &is, &os);
   ASSERT_TRUE(s.ok());
