@@ -84,6 +84,7 @@ const std::string minifier_src =
   "        removeTagWhitespace: true,"
   "        minifyCSS: true,"
   "        minifyJS: true,"
+  "        decodeEntities: true,"
   "      });"
   "    } else if (state.type === 2) {  /* SourceType::kCss */"
   "      result = minify('<style>' + state.data.toString() + '</style>', {"
