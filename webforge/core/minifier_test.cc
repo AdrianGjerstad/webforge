@@ -33,6 +33,9 @@
 #include "absl/status/status.h"
 #include <gtest/gtest.h>
 
+// Definition moved here to avoid spamming fork() and slowing tests down
+wf::Minifier minifier;
+
 class MinifierTest : public testing::Test {
 protected:
   void PrepareStringStreams(const std::string& input,
@@ -43,8 +46,6 @@ protected:
     os->clear();
     os->str("");
   }
-
-  wf::Minifier minifier_;
 };
 
 TEST_F(MinifierTest, CanMinifyHtml) {
@@ -63,7 +64,7 @@ TEST_F(MinifierTest, CanMinifyHtml) {
     "  </body>\n"
     "</html>\n", &is, &os);
 
-  absl::Status s = minifier_.Minify(wf::SourceType::kHtml, &is, &os);
+  absl::Status s = minifier.Minify(wf::SourceType::kHtml, &is, &os);
   ASSERT_TRUE(s.ok());
 
   EXPECT_EQ(os.str(), "<!doctype html>"
@@ -71,6 +72,43 @@ TEST_F(MinifierTest, CanMinifyHtml) {
                       "<body><h1>Hello World</h1><p>Hello World</p></body>"
                       "</html>");
 }
+
+TEST_F(MinifierTest, CanMinifyCss) {
+  std::istringstream is;
+  std::ostringstream os;
+
+  PrepareStringStreams(
+    ".class {\n"
+    "  margin: 0px;\n"
+    "  padding: 0px;\n"
+    "}\n", &is, &os);
+
+  absl::Status s = minifier.Minify(wf::SourceType::kCss, &is, &os);
+  ASSERT_TRUE(s.ok());
+
+  EXPECT_EQ(os.str(), ".class{margin:0;padding:0}");
+}
+
+TEST_F(MinifierTest, CanMinifyJavaScript) {
+  std::istringstream is;
+  std::ostringstream os;
+
+  PrepareStringStreams(
+    "(function(longName) {\n"
+    "  alert('Hello ' + longName);\n"
+    "})('Adrian');\n", &is, &os);
+
+  absl::Status s = minifier.Minify(wf::SourceType::kJavaScript, &is, &os);
+  ASSERT_TRUE(s.ok());
+
+  // So apparently html-minifier is incredible because it also does static code
+  // analysis. The below code is *not* what I thought it would produce, but I am
+  // pleasantly surprised.
+  EXPECT_EQ(os.str(), "alert(\"Hello Adrian\")");
+}
+
+// No need for fuzz tests (in theory) because html-minifier has its own test
+// suite.
 
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);
