@@ -107,6 +107,32 @@ TEST_F(MinifierTest, CanMinifyJavaScript) {
   EXPECT_EQ(os.str(), "alert(\"Hello Adrian\")");
 }
 
+TEST_F(MinifierTest, CanMinifyXml) {
+  std::istringstream is;
+  std::ostringstream os;
+
+  PrepareStringStreams(
+    "<?xml version=\"1.0\" charset=\"UTF-8\"?>\n"
+    "<urlset>\n"
+    "  <url>\n"
+    "    <loc>https://example.com/foobar/</loc>\n"
+    "    <lastmod>2025-04-26</lastmod>\n"
+    "    <priority>1.0</priority>\n"
+    "  </url>\n"
+    "</urlset>\n", &is, &os);
+
+  absl::Status s = minifier.Minify(wf::SourceType::kXml, &is, &os);
+  ASSERT_TRUE(s.ok());
+
+  // There is a space after the opening XML tag. I have no idea what set of
+  // options are required to get rid of it.
+  EXPECT_EQ(os.str(),
+    "<?xml version=\"1.0\" charset=\"UTF-8\"?> "
+    "<urlset><url><loc>https://example.com/foobar/</loc>"
+    "<lastmod>2025-04-26</lastmod><priority>1.0</priority>"
+    "</url></urlset>");
+}
+
 // No need for fuzz tests (in theory) because html-minifier has its own test
 // suite.
 

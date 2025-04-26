@@ -39,6 +39,7 @@ enum class SourceType {
   kHtml = 1,
   kCss = 2,
   kJavaScript = 3,
+  kXml = 4,
 };
 
 class Minifier {
