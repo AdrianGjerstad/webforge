@@ -56,13 +56,22 @@ public:
   // The `key` is a unique value used to identify this *specific* root-level
   // component. If two calls to Render using the same `key` are made, the
   // `component` istream is ignored. Otherwise, `component` is the actual Jinja2
-  // template code in istream form.
+  // template code in istream form. If `component` is null, key is interpreted
+  // as a path of a file to open within the search path.
   absl::Status Render(const std::string& key,
                       std::istream* component,
                       const std::vector<wf::proto::Data>& data,
                       std::ostream* output);
 
+  // Same as Render() but HTML-escapes strings
+  absl::Status RenderHTML(const std::string& key,
+                          std::istream* component,
+                          const std::vector<wf::proto::Data>& data,
+                          std::ostream* output);
+
   void FlushCache();
+  
+  const std::filesystem::path& SearchPath() const;
 
 private:
   absl::Status ExpandRenderValue(nlohmann::json* json_value,
@@ -83,6 +92,7 @@ private:
 
   inja::Environment env_;
 
+  std::filesystem::path search_path_;
   absl::flat_hash_map<std::string, inja::Template> template_cache_;
 };
 

@@ -39,7 +39,13 @@
 
 namespace wf {
 
-Renderer::Renderer(const std::filesystem::path& search_path) {
+Renderer::Renderer(const std::filesystem::path& search_path) :
+  search_path_(search_path) {
+  // By default, we don't want to escape HTML strings. The RenderHTML function
+  // interacts with this part of inja, and the rest of the code makes the
+  // assumption that strings will not be HTML-escaped.
+  env_.set_html_autoescape(false);
+
   // Tell inja::Environment we want to be in charge of included/extended
   // template lookups.
   env_.set_search_included_templates_in_files(false);
@@ -48,8 +54,7 @@ Renderer::Renderer(const std::filesystem::path& search_path) {
                             (const std::filesystem::path& current_path,
                              const std::string& name) {
     // search_path + name or else throw (I hate throw but it is what it is)
-    std::filesystem::path new_path(search_path);
-    new_path /= name;
+    std::filesystem::path new_path(search_path / name);
 
     std::ifstream is(new_path.string());
     if (!is.is_open()) {
@@ -72,7 +77,7 @@ absl::Status Renderer::Render(const std::string& key,
                               const std::vector<wf::proto::Data>& data,
                               std::ostream* output) {
   absl::StatusOr<const inja::Template> s_tmpl = CacheHitOrParse(key,
-                                                                 component);
+                                                                component);
   if (!s_tmpl.ok()) {
     return s_tmpl.status();
   }
@@ -94,9 +99,23 @@ absl::Status Renderer::Render(const std::string& key,
   return absl::OkStatus();
 }
 
+absl::Status Renderer::RenderHTML(const std::string& key,
+                                  std::istream* component,
+                                  const std::vector<wf::proto::Data>& data,
+                                  std::ostream* output) {
+  env_.set_html_autoescape(true);
+  absl::Status s = Render(key, component, data, output);
+  env_.set_html_autoescape(false);
+  return s;
+}
+
 void Renderer::FlushCache() {
   // Nice and easy :)
   template_cache_.clear();
+}
+
+const std::filesystem::path& Renderer::SearchPath() const {
+  return search_path_;
 }
 
 absl::Status Renderer::ExpandRenderValue(nlohmann::json* json_value,
@@ -164,11 +183,20 @@ absl::Status Renderer::PopulateRenderPayload(
 absl::StatusOr<const inja::Template> Renderer::CacheHitOrParse(
     const std::string& key,
     std::istream* is) {
+  std::ifstream ifs;
   if (template_cache_.contains(key)) {
     return template_cache_[key];
   }
 
   // Cache miss!
+  if (is == nullptr) {
+    ifs = std::ifstream(search_path_ / key);
+    if (!ifs.is_open()) {
+      return absl::NotFoundError(absl::StrFormat("no such template '%s'", key));
+    }
+
+    is = &ifs;
+  }
 
   std::string src(std::istreambuf_iterator<char>(*is), {});
 
