@@ -64,6 +64,12 @@ void StaticMiddleware::operator()(RequestPtr req, ResponsePtr res,
     return;
   }
 
+  // Make sure the method is okay
+  if (req->Method() != "get" && req->Method() != "head") {
+    next(absl::UnavailableError("must use GET or HEAD for resource"));
+    return;
+  }
+
   // Base matched!
   absl::string_view truncated_path = req->Path();
   truncated_path.remove_prefix(base_.size());
