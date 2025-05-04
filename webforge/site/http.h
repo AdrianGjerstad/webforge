@@ -288,6 +288,7 @@ private:
   std::shared_ptr<ResponseWriter> writer_;
   std::shared_ptr<Renderer> renderer_;
   absl::Status error_;
+  bool is_head_;  // Was the request a HEAD request?
 };
 
 using RequestPtr = std::shared_ptr<Request>;

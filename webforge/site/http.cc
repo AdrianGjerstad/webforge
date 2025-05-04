@@ -694,7 +694,7 @@ absl::Status ResponseWriter::WriteEnd(absl::string_view chunk) {
 }
 
 Response::Response() : head_written_(false), finished_(false),
-  version_("http/0.9"), status_(200), charset_("utf-8") {
+  version_("http/0.9"), status_(200), charset_("utf-8"), is_head_(false) {
   // Nothing to do.
 }
 
@@ -702,6 +702,7 @@ std::shared_ptr<Response> Response::FromRequest(const Request& req) {
   std::shared_ptr<Response> res = std::make_shared<Response>();
 
   res->version_ = req.Version();
+  res->is_head_ = req.Method() == "head";
 
   return res;  
 }
@@ -857,6 +858,11 @@ absl::Status Response::Write(absl::string_view data) {
     if (!s.ok()) {
       return s;
     }
+  }
+
+  if (is_head_) {
+    // Head requests do not have response bodies.
+    return absl::OkStatus();
   }
 
   return writer_->WriteChunk(data);

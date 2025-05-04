@@ -42,7 +42,12 @@ Route::Route() {
 
 bool Route::Match(const RequestPtr req) const {
   if (method_ && method_.value() != req->Method()) {
-    return false;
+    if (method_.value() == "get" && req->Method() == "head") {
+      // Handle HEAD requests as if they were GET requests
+      // (wf::Response::Write has logic to prevent writing bodies)
+    } else {
+      return false;
+    }
   }
 
   if (host_) {
