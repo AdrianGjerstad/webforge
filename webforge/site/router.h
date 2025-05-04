@@ -63,11 +63,8 @@
 //       continue the search for matching middleware and hopefully an eventual
 //       processor.
 // - If there is no match on the first route, wf::Router continues its search to
-//   the next route. The next route was created by Use(), so it does not match
-//   anything. However, because it is a wf::Processor, the search ends with its
-//   execution, which sends back a 404 error.
-// - If there are no matches, no response is ever sent to the client. As one can
-//   imagine, its best to avoid this case.
+//   the next route. The next route was created by Use(), so it does not attempt
+//   to match anything, and runs unconditionally.
 //
 // Note: wf::Router is virtual-host-aware. The above example is just not complex
 // enough to show it. Routers can have subrouters added via Path(base, router).
