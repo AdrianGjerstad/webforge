@@ -48,6 +48,17 @@ cc_library(
     visibility = ["//visibility:public"],
 )
 
+cc_test(
+    name = "http_test",
+    srcs = [
+        "http_test.cc",
+    ],
+    deps = [
+        ":http",
+    ],
+    size = "small",
+)
+
 cc_library(
     name = "middleware",
     srcs = ["middleware.cc"],
