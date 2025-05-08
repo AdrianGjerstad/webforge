@@ -55,6 +55,7 @@ cc_test(
     ],
     deps = [
         ":http",
+        "@googletest//:gtest"
     ],
     size = "small",
 )
