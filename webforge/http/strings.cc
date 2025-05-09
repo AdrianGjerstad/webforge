@@ -23,6 +23,8 @@
 
 #include "webforge/http/strings.h"
 
+#include <algorithm>
+#include <cctype>
 #include <sstream>
 #include <string>
 #include <vector>

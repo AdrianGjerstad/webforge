@@ -56,7 +56,6 @@ cc_library(
         "@abseil-cpp//absl/strings",
         "@abseil-cpp//absl/strings:str_format",
         "@abseil-cpp//absl/strings:string_view",
-        "@abseil-cpp//absl/time",
         "@nlohmann_json//:json",
     ],
     visibility = ["//visibility:public"],
