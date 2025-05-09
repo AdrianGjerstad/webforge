@@ -64,7 +64,12 @@ cc_test(
     ],
     deps = [
         ":http",
+        "@abseil-cpp//absl/container:flat_hash_map",
+        "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/status:status_matchers",
+        "@abseil-cpp//absl/strings:string_view",
         "@googletest//:gtest",
+        "@nlohmann_json//:json",
     ],
     size = "small",
 )

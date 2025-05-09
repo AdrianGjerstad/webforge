@@ -244,9 +244,9 @@ void Request::Stream(std::shared_ptr<std::istream> stream) {
 
 absl::Status Request::ParseURLEncoded(
   absl::flat_hash_map<std::string, std::string>* data) {
-  if (method_ == "GET" || method_ == "HEAD" || method_ == "OPTIONS") {
+  if (method_ == "get" || method_ == "head" || method_ == "options") {
     return absl::FailedPreconditionError(
-      absl::StrFormat("no request body allowed for %s", method_)
+      absl::StrFormat("no request body allowed for %s request", method_)
     );
   }
   
@@ -267,6 +267,10 @@ absl::Status Request::ParseURLEncoded(
     return absl::FailedPreconditionError("no Content-Length header");
   }
 
+  if (stream_ == nullptr) {
+    return absl::InternalError("stream is null");
+  }
+
   std::size_t length = std::stoul(headers_.at("content-length"));
   std::string s(length, 0);
   stream_->read(s.data(), length);
@@ -277,9 +281,9 @@ absl::Status Request::ParseURLEncoded(
 }
 
 absl::Status Request::ParseJSON(nlohmann::json* data) {
-  if (method_ == "GET" || method_ == "HEAD" || method_ == "OPTIONS") {
+  if (method_ == "get" || method_ == "head" || method_ == "options") {
     return absl::FailedPreconditionError(
-      absl::StrFormat("no request body allowed for %s", method_)
+      absl::StrFormat("no request body allowed for %s request", method_)
     );
   }
   
@@ -292,6 +296,10 @@ absl::Status Request::ParseJSON(nlohmann::json* data) {
     }
   } else {
     return absl::FailedPreconditionError("no Content-Type header for JSON");
+  }
+
+  if (stream_ == nullptr) {
+    return absl::InternalError("stream is null");
   }
 
   try {
