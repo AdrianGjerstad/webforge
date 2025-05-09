@@ -19,6 +19,7 @@ cc_library(
     srcs = ["cookie.cc"],
     hdrs = ["cookie.h"],
     deps = [
+        ":date",
         ":strings",
         "@abseil-cpp//absl/strings:string_view",
         "@abseil-cpp//absl/time",

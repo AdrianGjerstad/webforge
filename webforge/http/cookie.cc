@@ -29,6 +29,7 @@
 #include "absl/strings/string_view.h"
 #include "absl/time/time.h"
 
+#include "webforge/http/date.h"
 #include "webforge/http/strings.h"
 
 namespace wf {
@@ -59,9 +60,7 @@ std::string Cookie::ToString() const {
   }
 
   if (expires_) {
-    os << "; Expires=";
-    os << absl::FormatTime("%a, %d %b %Y %H:%M:%S GMT",
-                           expires_.value(), absl::UTCTimeZone());
+    os << "; Expires=" << expires_.value().Render();
   }
 
   if (http_only_) {
@@ -127,11 +126,11 @@ void Cookie::ClearDomain() {
   domain_.reset();
 }
 
-const std::optional<absl::Time>& Cookie::Expires() const {
+const std::optional<wf::HTTPDate>& Cookie::Expires() const {
   return expires_;
 }
 
-void Cookie::Expires(absl::Time expires) {
+void Cookie::Expires(wf::HTTPDate expires) {
   expires_ = expires;
 }
 

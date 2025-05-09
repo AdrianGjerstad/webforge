@@ -30,6 +30,8 @@
 #include "absl/strings/string_view.h"
 #include "absl/time/time.h"
 
+#include "webforge/http/date.h"
+
 namespace wf {
 
 class Cookie {
@@ -69,8 +71,8 @@ public:
   void Domain(absl::string_view domain);
   void ClearDomain();
 
-  const std::optional<absl::Time>& Expires() const;
-  void Expires(absl::Time expires);
+  const std::optional<wf::HTTPDate>& Expires() const;
+  void Expires(wf::HTTPDate expires);
   void ClearExpires();
 
   bool HttpOnly() const;
@@ -94,7 +96,7 @@ private:
   std::string key_;
   std::string value_;
   std::optional<std::string> domain_;
-  std::optional<absl::Time> expires_;
+  std::optional<wf::HTTPDate> expires_;
   bool http_only_;
   std::optional<absl::Duration> max_age_;
   std::optional<std::string> path_;
