@@ -38,6 +38,7 @@ cc_library(
         "//webforge/http:date",
         "//webforge/http:strings",
         "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/status:statusor",
         "@abseil-cpp//absl/strings:string_view",
     ],
     visibility = ["//visibility:public"],
@@ -54,9 +55,8 @@ cc_library(
         "//webforge/http:date",
         "//webforge/http:strings",
         "@abseil-cpp//absl/status",
-        "@abseil-cpp//absl/strings:str_format",
+        "@abseil-cpp//absl/status:statusor",
         "@abseil-cpp//absl/strings:string_view",
-        "@abseil-cpp//absl/time",
     ],
     visibility = ["//visibility:public"],
 )
