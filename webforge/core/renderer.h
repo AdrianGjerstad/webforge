@@ -41,6 +41,7 @@
 #include "absl/container/flat_hash_map.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
+#include "absl/strings/string_view.h"
 #include <inja/inja.hpp>
 #include <nlohmann/json.hpp>
 
@@ -59,13 +60,13 @@ public:
   // `component` istream is ignored. Otherwise, `component` is the actual Jinja2
   // template code in istream form. If `component` is null, key is interpreted
   // as a path of a file to open within the search path.
-  absl::Status Render(const std::string& key,
+  absl::Status Render(absl::string_view key,
                       std::istream* component,
                       const std::vector<wf::proto::Data>& data,
                       std::ostream* output);
 
   // Same as Render() but HTML-escapes strings
-  absl::Status RenderHTML(const std::string& key,
+  absl::Status RenderHTML(absl::string_view key,
                           std::istream* component,
                           const std::vector<wf::proto::Data>& data,
                           std::ostream* output);
@@ -87,7 +88,7 @@ private:
   // This function may fail if the input template source is malformed in any way
   // that causes it to fail parsing. No cache activity will result in errors.
   absl::StatusOr<const inja::Template> CacheHitOrParse(
-    const std::string& key,
+    absl::string_view key,
     std::istream* is
   );
 

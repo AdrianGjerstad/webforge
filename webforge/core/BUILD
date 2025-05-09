@@ -29,35 +29,6 @@ cc_proto_library(
 )
 
 cc_library(
-    name = "renderer",
-    srcs = ["renderer.cc"],
-    hdrs = ["renderer.h"],
-    deps = [
-        ":data_cc_proto",
-        "//inja",
-        "@abseil-cpp//absl/container:flat_hash_map",
-        "@abseil-cpp//absl/status",
-        "@abseil-cpp//absl/status:statusor",
-        "@abseil-cpp//absl/strings",
-        "@abseil-cpp//absl/strings:str_format",
-        "@nlohmann_json//:json",
-    ],
-    visibility = ["//visibility:public"],
-)
-
-cc_test(
-    name = "renderer_test",
-    srcs = ["renderer_test.cc"],
-    deps = [
-        ":renderer",
-        ":data_cc_proto",
-        "@abseil-cpp//absl/status",
-        "@googletest//:gtest",
-    ],
-    size = "small",
-)
-
-cc_library(
     name = "minifier",
     srcs = ["minifier.cc"],
     hdrs = ["minifier.h"],
@@ -73,6 +44,36 @@ cc_test(
     srcs = ["minifier_test.cc"],
     deps = [
         ":minifier",
+        "@abseil-cpp//absl/status",
+        "@googletest//:gtest",
+    ],
+    size = "small",
+)
+
+cc_library(
+    name = "renderer",
+    srcs = ["renderer.cc"],
+    hdrs = ["renderer.h"],
+    deps = [
+        ":data_cc_proto",
+        "//inja",
+        "@abseil-cpp//absl/container:flat_hash_map",
+        "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/status:statusor",
+        "@abseil-cpp//absl/strings",
+        "@abseil-cpp//absl/strings:str_format",
+        "@abseil-cpp//absl/strings:string_view",
+        "@nlohmann_json//:json",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_test(
+    name = "renderer_test",
+    srcs = ["renderer_test.cc"],
+    deps = [
+        ":renderer",
+        ":data_cc_proto",
         "@abseil-cpp//absl/status",
         "@googletest//:gtest",
     ],

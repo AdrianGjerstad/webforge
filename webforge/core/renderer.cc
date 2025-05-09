@@ -34,6 +34,7 @@
 #include "absl/status/statusor.h"
 #include "absl/strings/str_format.h"
 #include "absl/strings/str_split.h"
+#include "absl/strings/string_view.h"
 #include <inja/inja.hpp>
 #include <nlohmann/json.hpp>
 
@@ -54,7 +55,7 @@ Renderer::Renderer(const std::filesystem::path& search_path) :
 
   env_.set_include_callback([this, search_path]
                             (const std::filesystem::path& current_path,
-                             const std::string& name) {
+                             absl::string_view name) {
     // search_path + name or else throw (I hate throw but it is what it is)
     std::filesystem::path new_path(search_path / name);
 
@@ -74,7 +75,7 @@ Renderer::Renderer(const std::filesystem::path& search_path) :
   });
 }
 
-absl::Status Renderer::Render(const std::string& key,
+absl::Status Renderer::Render(absl::string_view key,
                               std::istream* component,
                               const std::vector<wf::proto::Data>& data,
                               std::ostream* output) {
@@ -101,7 +102,7 @@ absl::Status Renderer::Render(const std::string& key,
   return absl::OkStatus();
 }
 
-absl::Status Renderer::RenderHTML(const std::string& key,
+absl::Status Renderer::RenderHTML(absl::string_view key,
                                   std::istream* component,
                                   const std::vector<wf::proto::Data>& data,
                                   std::ostream* output) {
@@ -183,7 +184,7 @@ absl::Status Renderer::PopulateRenderPayload(
 }
 
 absl::StatusOr<const inja::Template> Renderer::CacheHitOrParse(
-    const std::string& key,
+    absl::string_view key,
     std::istream* is) {
   std::ifstream ifs;
   if (template_cache_.contains(key)) {

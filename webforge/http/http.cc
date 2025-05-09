@@ -535,9 +535,9 @@ absl::Status Response::Render(absl::string_view component,
   std::ostream os(&sb);
 
   if (mime_type == "text/html") {
-    s = renderer_->RenderHTML(std::string(component), nullptr, data, &os);
+    s = renderer_->RenderHTML(component, nullptr, data, &os);
   } else {
-    s = renderer_->Render(std::string(component), nullptr, data, &os);
+    s = renderer_->Render(component, nullptr, data, &os);
   }
 
   return s;
