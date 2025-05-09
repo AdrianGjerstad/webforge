@@ -54,7 +54,7 @@ namespace wf {
 namespace {
 
 // NodeJS source code to be run in a child process
-const std::string minifier_src =
+const std::string kMinifierSrc =
   "/* Some ways of installing html-minifier install it in a place node doesn't"
   " * recognize. This is the fix."
   " */"
@@ -324,7 +324,7 @@ absl::Status Minifier::StartWorkerProcess() {
   setenv("RESPONSE_FD", std::to_string(response_fds[1]).c_str(), 1);
 
   const char* argv[] = {
-    "node", "-e", minifier_src.c_str(), NULL
+    "node", "-e", kMinifierSrc.c_str(), NULL
   };
   res = execv("/usr/bin/node", (char* const*)argv);
 

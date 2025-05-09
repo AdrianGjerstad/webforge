@@ -34,7 +34,7 @@
 
 namespace wf {
 
-// NOTE: Changes here must also be made inside minifier_src in minifier.cc.
+// NOTE: Changes here must also be made inside kMinifierSrc in minifier.cc.
 enum class SourceType {
   kHtml = 1,
   kCss = 2,
