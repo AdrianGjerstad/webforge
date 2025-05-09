@@ -25,7 +25,6 @@
 
 #include <sstream>
 #include <string>
-#include <vector>
 
 #include "absl/status/status.h"
 #include <gtest/gtest.h>

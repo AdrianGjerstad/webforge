@@ -26,9 +26,9 @@
 
 #include "webforge/core/minifier.h"
 
-#include <sstream>
-
 #include <iostream>
+#include <sstream>
+#include <string>
 
 #include "absl/status/status.h"
 #include <gtest/gtest.h>
