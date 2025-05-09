@@ -34,6 +34,8 @@
 
 #include "webforge/core/data.pb.h"
 #include "webforge/site/http.h"
+#include "webforge/site/httpstrings.h"
+#include "webforge/site/httpdate.h"
 #include "webforge/site/middleware.h"
 
 namespace wf {
@@ -70,7 +72,7 @@ StaticProcessor::StaticProcessor(const std::filesystem::path& filename) :
 absl::Status StaticProcessor::operator()(RequestPtr req, ResponsePtr res) {
   std::filesystem::path filepath = res->ComponentPath() / filename_;
   uintmax_t file_size;
-  std::filesystem::file_time_type file_mtime;
+  wf::HTTPDate mtime;
 
   if (!std::filesystem::exists(filepath)) {
     return absl::InternalError("static file does not exist");
@@ -88,24 +90,22 @@ absl::Status StaticProcessor::operator()(RequestPtr req, ResponsePtr res) {
   }
 
   try {
-    file_mtime = std::filesystem::last_write_time(filepath);
+    mtime = std::filesystem::last_write_time(filepath);
   } catch (...) {
     return absl::InternalError("last_write_time threw");
   }
 
-  auto mtime = HTTPTruncateTime(FileTimeToAbslTime(file_mtime));
-
   res->Header("Content-Length", std::to_string(file_size));
   res->Header("Content-Type", GetMimeType(filepath.string()));
-  res->Header("Last-Modified", FormatHTTPDate(mtime));
+  res->Header("Last-Modified", mtime.Render());
 
   if (req->Header("If-Modified-Since").status().ok()) {
-    absl::StatusOr<absl::Time> s_time =
-      ParseHTTPDate(req->Header("If-Modified-Since").value());
+    absl::StatusOr<HTTPDate> ims_date =
+      wf::HTTPDate::FromString(req->Header("If-Modified-Since").value());
 
     // If the time data is malformed, we don't care. Don't error out here.
-    if (s_time.ok()) {
-      if (mtime <= s_time.value()) {
+    if (ims_date.ok()) {
+      if (mtime <= ims_date.value()) {
         // Client has a cached copy of this file already.
         res->Status(304);
         res->End();

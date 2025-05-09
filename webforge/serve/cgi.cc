@@ -30,6 +30,7 @@
 
 #include "webforge/site/application.h"
 #include "webforge/site/http.h"
+#include "webforge/site/httpstrings.h"
 
 extern char** environ;
 

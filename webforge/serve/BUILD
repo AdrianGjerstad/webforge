@@ -21,6 +21,7 @@ cc_library(
     deps = [
         "//webforge/site:application",
         "//webforge/site:http",
+        "//webforge/site:httpstrings",
         "@abseil-cpp//absl/status",
         "@abseil-cpp//absl/strings:string_view",
     ],

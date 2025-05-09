@@ -31,9 +31,18 @@ cc_library(
 
 cc_library(
     name = "http",
-    srcs = ["http.cc"],
-    hdrs = ["http.h"],
+    srcs = [
+        "cookie.cc",
+        "http.cc",
+        "httpdate.cc",
+    ],
+    hdrs = [
+        "cookie.h",
+        "http.h",
+        "httpdate.h",
+    ],
     deps = [
+        ":httpstrings",
         "//webforge/core:data_cc_proto",
         "//webforge/core:renderer",
         "@abseil-cpp//absl/container:flat_hash_map",
@@ -55,9 +64,25 @@ cc_test(
     ],
     deps = [
         ":http",
-        "@googletest//:gtest"
+        "@googletest//:gtest",
     ],
     size = "small",
+)
+
+cc_library(
+    name = "httpstrings",
+    srcs = [
+        "httpstrings.cc",
+        "mime.cc",
+    ],
+    hdrs = ["httpstrings.h"],
+    deps = [
+        "@abseil-cpp//absl/container:flat_hash_map",
+        "@abseil-cpp//absl/strings",
+        "@abseil-cpp//absl/strings:str_format",
+        "@abseil-cpp//absl/strings:string_view",
+    ],
+    visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -66,6 +91,7 @@ cc_library(
     hdrs = ["middleware.h"],
     deps = [
         ":http",
+        ":httpstrings",
         "@abseil-cpp//absl/status",
         "@abseil-cpp//absl/strings:string_view",
     ],
@@ -78,6 +104,7 @@ cc_library(
     hdrs = ["processor.h"],
     deps = [
         ":http",
+        ":httpstrings",
         ":middleware",
         "//webforge/core:data_cc_proto",
         "@abseil-cpp//absl/status",

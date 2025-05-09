@@ -30,7 +30,6 @@
 #include <filesystem>
 #include <iostream>
 #include <memory>
-#include <optional>
 #include <string>
 #include <vector>
 
@@ -43,98 +42,9 @@
 
 #include "webforge/core/data.pb.h"
 #include "webforge/core/renderer.h"
+#include "webforge/site/cookie.h"
 
 namespace wf {
-
-// Parses a string in the form foo=bar&baz=ham into its map form
-//
-// The above example would convert to {{"foo", "bar"}, {"baz", "ham"}}. This
-// function executes URLDecode on both the names and values of each pair. This
-// function DOES NOT FILTER BINARY DATA. `query` is not cleared before having
-// data added.
-void ParseQueryString(absl::string_view s,
-                      absl::flat_hash_map<std::string, std::string>* query);
-
-// In addition to the characters in disallowed_chars, bytes from 0-31 and 127
-// are automatically escaped, and so is '%'
-std::string URLEncode(absl::string_view s,
-                      absl::string_view disallowed_chars = ":/?#[]@!$&'()*+,;=",
-                      bool plus_space = true);
-std::string URLDecode(absl::string_view s);
-
-// Gets the mime type of a file based on the extension
-const std::string& GetMimeType(absl::string_view name);
-
-// Formats an absl::Time in proper HTTP form
-std::string FormatHTTPDate(absl::Time time);
-// Parses an HTTP Date string into an absl::Time
-absl::StatusOr<absl::Time> ParseHTTPDate(absl::string_view s);
-// Truncates an absl::Time to the smallest unit visible in an HTTP Date string,
-// which is one second.
-absl::Time HTTPTruncateTime(absl::Time time);
-// Provides a portable way to convert std::filesystem::file_time_type to
-// absl::Time for processing.
-absl::Time FileTimeToAbslTime(std::filesystem::file_time_type ftime);
-
-// Represents an HTTP cookie
-class Cookie {
-public:
-  enum class SameSitePolicy {
-    kStrict = 1,
-    kLax = 2,
-    kNone = 3,
-  };
-
-  // Defines a cookie to have a set value
-  Cookie(absl::string_view key, absl::string_view value);
-
-  // Defines a cookie to be deleted
-  Cookie(absl::string_view key);
-
-  std::string ToString() const;
-
-  const std::string& Key() const;
-  void Key(absl::string_view key);
-
-  const std::string& Value() const;
-  void Value(absl::string_view value);
-
-  const std::optional<std::string>& Domain() const;
-  void Domain(absl::string_view domain);
-  void ClearDomain();
-
-  const std::optional<absl::Time>& Expires() const;
-  void Expires(absl::Time expires);
-  void ClearExpires();
-
-  bool HttpOnly() const;
-  void HttpOnly(bool http_only);
-
-  const std::optional<absl::Duration>& MaxAge() const;
-  void MaxAge(absl::Duration max_age);
-  void ClearMaxAge();
-
-  const std::optional<std::string>& Path() const;
-  void Path(absl::string_view path);
-
-  const std::optional<SameSitePolicy>& SameSite() const;
-  void SameSite(SameSitePolicy same_site);
-  void ClearSameSite();
-
-  bool Secure() const;
-  void Secure(bool secure);
-
-private:
-  std::string key_;
-  std::string value_;
-  std::optional<std::string> domain_;
-  std::optional<absl::Time> expires_;
-  bool http_only_;
-  std::optional<absl::Duration> max_age_;
-  std::optional<std::string> path_;
-  std::optional<SameSitePolicy> same_site_;
-  bool secure_;
-};
 
 class Request {
 public:
