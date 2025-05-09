@@ -20,7 +20,7 @@
 // This file defines tests for the HTTP suite.
 //
 
-#include "webforge/site/http.h"
+#include "webforge/http/http.h"
 
 #include <memory>
 #include <sstream>

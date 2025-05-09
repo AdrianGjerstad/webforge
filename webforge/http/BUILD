@@ -15,44 +15,11 @@
 #
 
 cc_library(
-    name = "application",
-    srcs = ["application.cc"],
-    hdrs = ["application.h"],
+    name = "cookie",
+    srcs = ["cookie.cc"],
+    hdrs = ["cookie.h"],
     deps = [
-        ":http",
-        ":middleware",
-        ":router",
-        "//webforge/core:renderer",
-        "@abseil-cpp//absl/status",
-        "@abseil-cpp//absl/strings:string_view",
-    ],
-    visibility = ["//visibility:public"],
-)
-
-cc_library(
-    name = "middleware",
-    srcs = ["middleware.cc"],
-    hdrs = ["middleware.h"],
-    deps = [
-        ":http",
-        ":httpstrings",
-        "@abseil-cpp//absl/status",
-        "@abseil-cpp//absl/strings:string_view",
-    ],
-    visibility = ["//visibility:public"],
-)
-
-cc_library(
-    name = "processor",
-    srcs = ["processor.cc"],
-    hdrs = ["processor.h"],
-    deps = [
-        ":http",
-        ":httpstrings",
-        ":middleware",
-        "//webforge/core:data_cc_proto",
-        "@abseil-cpp//absl/status",
-        "@abseil-cpp//absl/strings:str_format",
+        ":strings",
         "@abseil-cpp//absl/strings:string_view",
         "@abseil-cpp//absl/time",
     ],
@@ -60,15 +27,54 @@ cc_library(
 )
 
 cc_library(
-    name = "router",
-    srcs = ["router.cc"],
-    hdrs = ["router.h"],
+    name = "http",
+    srcs = ["http.cc"],
+    hdrs = ["http.h"],
     deps = [
-        ":http",
-        ":middleware",
+        ":cookie",
+        ":strings",
+        "//webforge/core:data_cc_proto",
+        "//webforge/core:renderer",
         "@abseil-cpp//absl/container:flat_hash_map",
         "@abseil-cpp//absl/status",
         "@abseil-cpp//absl/status:statusor",
+        "@abseil-cpp//absl/strings",
+        "@abseil-cpp//absl/strings:str_format",
+        "@abseil-cpp//absl/strings:string_view",
+        "@abseil-cpp//absl/time",
+        "@nlohmann_json//:json",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_test(
+    name = "http_test",
+    srcs = [
+        "http_test.cc",
+    ],
+    deps = [
+        ":http",
+        "@abseil-cpp//absl/container:flat_hash_map",
+        "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/status:status_matchers",
+        "@abseil-cpp//absl/strings:string_view",
+        "@googletest//:gtest",
+        "@nlohmann_json//:json",
+    ],
+    size = "small",
+)
+
+cc_library(
+    name = "strings",
+    srcs = [
+        "mime.cc",
+        "strings.cc",
+    ],
+    hdrs = ["strings.h"],
+    deps = [
+        "@abseil-cpp//absl/container:flat_hash_map",
+        "@abseil-cpp//absl/strings",
+        "@abseil-cpp//absl/strings:str_format",
         "@abseil-cpp//absl/strings:string_view",
     ],
     visibility = ["//visibility:public"],

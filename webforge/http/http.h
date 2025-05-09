@@ -42,7 +42,7 @@
 
 #include "webforge/core/data.pb.h"
 #include "webforge/core/renderer.h"
-#include "webforge/site/cookie.h"
+#include "webforge/http/cookie.h"
 
 namespace wf {
 

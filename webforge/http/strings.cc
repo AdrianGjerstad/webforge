@@ -21,7 +21,7 @@
 // mime type handling, which is implemented in mime.cc.
 //
 
-#include "webforge/site/httpstrings.h"
+#include "webforge/http/strings.h"
 
 #include <sstream>
 #include <string>

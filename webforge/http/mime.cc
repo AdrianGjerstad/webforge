@@ -20,7 +20,7 @@
 // This file defines the implementation of mime-fetching functions.
 //
 
-#include "webforge/site/httpstrings.h"
+#include "webforge/http/strings.h"
 
 #include <string>
 

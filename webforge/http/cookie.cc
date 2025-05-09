@@ -20,7 +20,7 @@
 // This file defines exactly what a wf::Cookie does and how it does it.
 //
 
-#include "webforge/site/cookie.h"
+#include "webforge/http/cookie.h"
 
 #include <optional>
 #include <sstream>
@@ -29,7 +29,7 @@
 #include "absl/strings/string_view.h"
 #include "absl/time/time.h"
 
-#include "webforge/site/httpstrings.h"
+#include "webforge/http/strings.h"
 
 namespace wf {
 

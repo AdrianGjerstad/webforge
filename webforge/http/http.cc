@@ -20,7 +20,7 @@
 // This file implements both wf::Request and wf::Response.
 //
 
-#include "webforge/site/http.h"
+#include "webforge/http/http.h"
 
 #include <algorithm>
 #include <cctype>
@@ -44,7 +44,8 @@
 
 #include "webforge/core/data.pb.h"
 #include "webforge/core/renderer.h"
-#include "webforge/site/httpstrings.h"
+#include "webforge/http/cookie.h"
+#include "webforge/http/strings.h"
 
 extern char** environ;
 
