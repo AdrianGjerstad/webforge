@@ -51,16 +51,18 @@ std::string RenderQueryString(
   const absl::flat_hash_map<std::string, std::string>& query
 );
 
+const std::string UnsafeChars(" :/?#[]@!$&'\"()*+,;=<>");
+
 // In addition to the characters in disallowed_chars, bytes from 0-31 and 127
 // are automatically escaped, and so is '%'. This function also encodes ' '
 // (space) as '+' (plus).
 std::string URLEncode(absl::string_view s,
-                      absl::string_view disallowed_chars = ":/?#[]@!$&'()*+,;=",
+                      absl::string_view disallowed_chars = UnsafeChars,
                       bool plus_space = true);
 
 // Decodes all %-escape sequences and decodes '+' to ' ' (space). THIS FUNCTION
 // DOES NOT FILTER BINARY DATA.
-std::string URLDecode(absl::string_view s);
+std::string URLDecode(absl::string_view s, bool plus_space = true);
 
 // Gets the mime type of a file based on the extension
 const std::string& GetMimeType(absl::string_view name);

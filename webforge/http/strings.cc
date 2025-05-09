@@ -111,12 +111,12 @@ std::string URLEncode(absl::string_view s, absl::string_view disallowed_chars,
   return os.str();
 }
 
-std::string URLDecode(absl::string_view s) {
+std::string URLDecode(absl::string_view s, bool plus_space) {
   std::string result;
   result.reserve(s.size());
 
   for (std::size_t i = 0; i < s.size(); ++i) {
-    if (s[i] == '+') {
+    if (plus_space && s[i] == '+') {
       result.push_back(' ');
     } else if (s[i] == '%') {
       if (i + 2 >= s.size()) {

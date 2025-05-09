@@ -80,3 +80,16 @@ cc_library(
     visibility = ["//visibility:public"],
 )
 
+cc_test(
+    name = "strings_test",
+    srcs = [
+        "strings_test.cc",
+    ],
+    deps = [
+        ":strings",
+        "@abseil-cpp//absl/container:flat_hash_map",
+        "@googletest//:gtest",
+    ],
+    size = "small",
+)
+
