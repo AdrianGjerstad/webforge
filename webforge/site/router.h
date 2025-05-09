@@ -87,7 +87,7 @@
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
 
-#include "webforge/site/http.h"
+#include "webforge/http/http.h"
 #include "webforge/site/middleware.h"
 
 namespace wf {

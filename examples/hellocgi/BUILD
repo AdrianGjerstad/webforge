@@ -18,9 +18,9 @@ cc_binary(
     name = "hellocgi",
     srcs = ["main.cc"],
     deps = [
+        "//webforge/http",
         "//webforge/serve:cgi",
         "//webforge/site:application",
-        "//webforge/site:http",
         "//webforge/site:processor",
         "@abseil-cpp//absl/status",
         "@nlohmann_json//:json",

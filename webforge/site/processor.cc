@@ -33,9 +33,9 @@
 #include "absl/time/time.h"
 
 #include "webforge/core/data.pb.h"
-#include "webforge/site/http.h"
-#include "webforge/site/httpstrings.h"
-#include "webforge/site/httpdate.h"
+#include "webforge/http/http.h"
+#include "webforge/http/date.h"
+#include "webforge/http/strings.h"
 #include "webforge/site/middleware.h"
 
 namespace wf {

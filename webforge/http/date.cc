@@ -20,7 +20,7 @@
 // This file defines all functions for wf::HTTPDate.
 //
 
-#include "webforge/site/httpdate.h"
+#include "webforge/http/date.h"
 
 #include <chrono>
 #include <filesystem>

@@ -27,9 +27,9 @@
 #include <memory>
 
 #include "absl/status/status.h"
+#include "webforge/http/http.h"
 #include "webforge/serve/cgi.h"
 #include "webforge/site/application.h"
-#include "webforge/site/http.h"
 #include "webforge/site/processor.h"
 
 absl::Status HelloWorld(wf::RequestPtr req, wf::ResponsePtr res) {

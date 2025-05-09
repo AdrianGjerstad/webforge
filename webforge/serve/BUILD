@@ -19,9 +19,9 @@ cc_library(
     srcs = ["cgi.cc"],
     hdrs = ["cgi.h"],
     deps = [
+        "//webforge/http",
+        "//webforge/http:strings",
         "//webforge/site:application",
-        "//webforge/site:http",
-        "//webforge/site:httpstrings",
         "@abseil-cpp//absl/status",
         "@abseil-cpp//absl/strings:string_view",
     ],

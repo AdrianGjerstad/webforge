@@ -27,6 +27,20 @@ cc_library(
 )
 
 cc_library(
+    name = "date",
+    srcs = ["date.cc"],
+    hdrs = ["date.h"],
+    deps = [
+        "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/status:statusor",
+        "@abseil-cpp//absl/strings:str_format",
+        "@abseil-cpp//absl/strings:string_view",
+        "@abseil-cpp//absl/time",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
     name = "http",
     srcs = ["http.cc"],
     hdrs = ["http.h"],

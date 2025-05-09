@@ -33,7 +33,7 @@
 #include "absl/strings/string_view.h"
 
 #include "webforge/core/data.pb.h"
-#include "webforge/site/http.h"
+#include "webforge/http/http.h"
 #include "webforge/site/middleware.h"
 
 namespace wf {

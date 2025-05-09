@@ -28,9 +28,9 @@
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
 
+#include "webforge/http/http.h"
+#include "webforge/http/strings.h"
 #include "webforge/site/application.h"
-#include "webforge/site/http.h"
-#include "webforge/site/httpstrings.h"
 
 extern char** environ;
 
