@@ -30,6 +30,7 @@
 #define WEBFORGE_SITE_HTTPDATE_H_
 
 #include <filesystem>
+#include <iostream>
 #include <string>
 
 #include "absl/status/statusor.h"
@@ -71,6 +72,16 @@ public:
 
   // Renders a stringified version using absl::FormatTime
   std::string Render() const;
+  friend std::ostream& operator<<(std::ostream& os, const HTTPDate& date) {
+    os << date.Render();
+    return os;
+  }
+  
+  // For Abseil's use. Please consider using operator<< or ToString().
+  template <typename Sink>
+  friend void AbslStringify(Sink& sink, const HTTPDate& date) {
+    sink.Append(date.Render());
+  }
 };
 
 }

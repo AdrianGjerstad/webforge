@@ -24,6 +24,7 @@
 #ifndef WEBFORGE_SITE_COOKIE_H_
 #define WEBFORGE_SITE_COOKIE_H_
 
+#include <iostream>
 #include <optional>
 #include <string>
 
@@ -60,6 +61,10 @@ public:
   // quotes are allowed. Some API's, especially client-side, may not anticipate
   // this scheme.
   std::string ToString() const;
+  friend std::ostream& operator<<(std::ostream& os, const Cookie& cookie) {
+    os << cookie.ToString();
+    return os;
+  }
 
   const std::string& Key() const;
   void Key(absl::string_view key);
@@ -91,6 +96,12 @@ public:
 
   bool Secure() const;
   void Secure(bool secure);
+
+  // For Abseil's use. Please consider using operator<< or ToString().
+  template <typename Sink>
+  friend void AbslStringify(Sink& sink, const Cookie& cookie) {
+    sink.Append(cookie.ToString());
+  }
 
 private:
   std::string key_;

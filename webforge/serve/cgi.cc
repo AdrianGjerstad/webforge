@@ -102,7 +102,7 @@ public:
     }
     
     for (auto& it : res.Cookies()) {
-      std::cout << "set-cookie: " << it.second.ToString() << std::endl;
+      std::cout << "set-cookie: " << it.second << std::endl;
     }
 
     // Head is finished
