@@ -75,6 +75,7 @@ cc_test(
         ":renderer",
         ":data_cc_proto",
         "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/status:status_matchers",
         "@googletest//:gtest",
     ],
     size = "small",

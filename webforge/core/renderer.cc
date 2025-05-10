@@ -168,7 +168,7 @@ absl::Status Renderer::PopulateRenderPayload(
                                    "non-container field");
       }
 
-      *part = ((*part)[key_part]);
+      part = &((*part)[key_part]);
     }
 
     // part[key_split[-1]] is the location of the new json value.
