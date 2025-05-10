@@ -106,6 +106,11 @@ TEST(HTTPStrings, CanRenderQueryStrings) {
             "q=Hello%2C+world%21");
 }
 
+TEST(HTTPStrings, CanHandleCaseInsensitiveComparisons) {
+  EXPECT_EQ(wf::CaseInsensitive("hello"), wf::CaseInsensitive("HELLO"));
+  EXPECT_EQ(wf::CaseInsensitive("FoO bAr"), wf::CaseInsensitive("fOo BaR"));
+}
+
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
