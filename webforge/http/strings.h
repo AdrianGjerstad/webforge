@@ -67,7 +67,8 @@ std::string URLDecode(absl::string_view s, bool plus_space = true);
 // Gets the mime type of a file based on the extension
 const std::string& GetMimeType(absl::string_view name);
 
-// Transforms the given string into a consistent casing (lowercase).
+// Transforms the given string into a consistent casing.
+std::string CaseInsensitive(absl::string_view s);
 std::string* CaseInsensitive(std::string* s);
 
 }

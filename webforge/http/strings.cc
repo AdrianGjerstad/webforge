@@ -165,6 +165,12 @@ std::string URLDecode(absl::string_view s, bool plus_space) {
   return result;
 }
 
+std::string CaseInsensitive(absl::string_view s) {
+  std::string str(s);
+  CaseInsensitive(&str);
+  return str;
+}
+
 std::string* CaseInsensitive(std::string* s) {
   std::transform(s->begin(), s->end(), s->begin(),
                  [](unsigned char c) { return std::tolower(c); });
