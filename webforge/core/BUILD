@@ -56,7 +56,7 @@ cc_library(
     hdrs = ["renderer.h"],
     deps = [
         ":data_cc_proto",
-        "//inja",
+        "//third-party/inja",
         "@abseil-cpp//absl/container:flat_hash_map",
         "@abseil-cpp//absl/status",
         "@abseil-cpp//absl/status:statusor",
