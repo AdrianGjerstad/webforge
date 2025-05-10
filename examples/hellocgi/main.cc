@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
   wf::Application app;
 
   // Routes
-  app.Get("/", std::move(std::make_unique<wf::FProcessor>(HelloWorld)));
+  app.Get("/", std::make_unique<wf::FProcessor>(HelloWorld));
 
   // Error pages
   // If a Processor returns a non-OK status or a Middleware next's with a non-OK
@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
   // requests that go unhandled at the end of the processing stack are directed
   // to the NotFound error handler.
   app.Error(absl::StatusCode::kNotFound,
-            std::move(std::make_unique<wf::FProcessor>(NotFoundError)));
+            std::make_unique<wf::FProcessor>(NotFoundError));
   return wf::ServeCGI(&app);
 }
 
