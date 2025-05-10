@@ -25,6 +25,7 @@
 #include "absl/container/flat_hash_map.h"
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 TEST(HTTPStrings, CanURLEncodeUnsafeStrings) {
   // Base case (does it function?)
@@ -94,8 +95,15 @@ TEST(HTTPStrings, CanParseQueryStrings) {
 }
 
 TEST(HTTPStrings, CanRenderQueryStrings) {
-  EXPECT_EQ(wf::RenderQueryString({{"foo", "bar"}, {"baz", "ham"}}),
-            "foo=bar&baz=ham");
+  // Multiple possibilities, since the order doesn't matter and the underlying
+  // implementation uses flat_hash_map which is unordered.
+  EXPECT_THAT(wf::RenderQueryString({{"foo", "bar"}, {"baz", "ham"}}),
+              testing::AnyOf(
+                testing::Eq("foo=bar&baz=ham"),
+                testing::Eq("baz=ham&foo=bar")));
+
+  EXPECT_EQ(wf::RenderQueryString({{"q", "Hello, world!"}}),
+            "q=Hello%2C+world%21");
 }
 
 int main(int argc, char** argv) {
