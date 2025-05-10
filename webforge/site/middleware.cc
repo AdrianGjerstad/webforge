@@ -69,7 +69,8 @@ void StaticMiddleware::operator()(RequestPtr req, ResponsePtr res,
   }
 
   // Make sure the method is okay
-  if (req->Method() != "get" && req->Method() != "head") {
+  if (req->Method() != CaseInsensitive("GET") &&
+      req->Method() != CaseInsensitive("HEAD")) {
     next(absl::UnavailableError("must use GET or HEAD for resource"));
     return;
   }

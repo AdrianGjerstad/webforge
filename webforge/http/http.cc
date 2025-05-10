@@ -78,7 +78,8 @@ private:
 
 }
 
-Request::Request() : method_("get"), path_("/"), version_("http/0.9") {
+Request::Request() : method_(CaseInsensitive("GET")), path_("/"),
+  version_(CaseInsensitive("HTTP/0.9")) {
   // Nothing to do.
 }
 
@@ -95,8 +96,7 @@ const std::string& Request::Method() const {
 }
 
 void Request::Method(absl::string_view method) {
-  method_ = std::string(method);
-  CaseInsensitive(&method_);
+  method_ = CaseInsensitive(method);
 }
 
 const std::string& Request::Path() const {
@@ -137,13 +137,11 @@ const std::string& Request::Version() const {
 }
 
 void Request::Version(absl::string_view version) {
-  version_ = std::string(version);
-  CaseInsensitive(&version_);
+  version_ = CaseInsensitive(version);
 }
 
 absl::StatusOr<const std::string> Request::Header(absl::string_view name) const {
-  std::string name_string(name);
-  CaseInsensitive(&name_string);
+  std::string name_string = CaseInsensitive(name);
   if (headers_.contains(name_string)) {
     return headers_.at(name_string);
   }
@@ -152,10 +150,9 @@ absl::StatusOr<const std::string> Request::Header(absl::string_view name) const 
 }
 
 void Request::Header(absl::string_view name, absl::string_view value) {
-  std::string name_string(name);
-  CaseInsensitive(&name_string);
+  std::string name_string = CaseInsensitive(name);
 
-  if (name_string == "cookie") {
+  if (name_string == CaseInsensitive("Cookie")) {
     // We must treat cookies specially. This is not just a regular header.
     std::vector<absl::string_view> parts = absl::StrSplit(value, ';');
     for (auto& it : parts) {
@@ -201,8 +198,7 @@ void Request::ClearHeaders() {
 }
 
 absl::StatusOr<const std::string> Request::Cookie(absl::string_view name) const {
-  std::string name_string(name);
-  CaseInsensitive(&name_string);
+  std::string name_string = CaseInsensitive(name);
   if (cookies_.contains(name_string)) {
     return cookies_.at(name_string);
   }
@@ -211,8 +207,7 @@ absl::StatusOr<const std::string> Request::Cookie(absl::string_view name) const 
 }
 
 void Request::Cookie(absl::string_view name, absl::string_view value) {
-  std::string name_string(name);
-  CaseInsensitive(&name_string);
+  std::string name_string = CaseInsensitive(name);
   cookies_[name_string] = std::string(value);
 }
 
@@ -242,17 +237,21 @@ void Request::Stream(std::shared_ptr<std::istream> stream) {
 
 absl::Status Request::ParseURLEncoded(
   absl::flat_hash_map<std::string, std::string>* data) {
-  if (method_ == "get" || method_ == "head" || method_ == "options") {
+  if (method_ == CaseInsensitive("GET") ||
+      method_ == CaseInsensitive("HEAD") ||
+      method_ == CaseInsensitive("OPTIONS")) {
     return absl::FailedPreconditionError(
       absl::StrFormat("no request body allowed for %s request", method_)
     );
   }
   
-  if (headers_.contains("content-type")) {
-    if (headers_.at("content-type") != "application/x-www-form-urlencoded") {
+  std::string ctype_name = CaseInsensitive("Content-Type");
+  if (headers_.contains(ctype_name)) {
+    if (headers_.at(ctype_name) !=
+        "application/x-www-form-urlencoded") {
       return absl::FailedPreconditionError(
         absl::StrFormat("incorrect Content-Type for URLEncoded: '%s'",
-                        headers_.at("content-type"))
+                        headers_.at(ctype_name))
       );
     }
   } else {
@@ -261,7 +260,8 @@ absl::Status Request::ParseURLEncoded(
     );
   }
 
-  if (!headers_.contains("content-length")) {
+  std::string clen_name = CaseInsensitive("Content-Length");
+  if (!headers_.contains(clen_name)) {
     return absl::FailedPreconditionError("no Content-Length header");
   }
 
@@ -269,7 +269,7 @@ absl::Status Request::ParseURLEncoded(
     return absl::InternalError("stream is null");
   }
 
-  std::size_t length = std::stoul(headers_.at("content-length"));
+  std::size_t length = std::stoul(headers_.at(clen_name));
   std::string s(length, 0);
   stream_->read(s.data(), length);
 
@@ -279,17 +279,20 @@ absl::Status Request::ParseURLEncoded(
 }
 
 absl::Status Request::ParseJSON(nlohmann::json* data) {
-  if (method_ == "get" || method_ == "head" || method_ == "options") {
+  if (method_ == CaseInsensitive("GET") ||
+      method_ == CaseInsensitive("HEAD") ||
+      method_ == CaseInsensitive("OPTIONS")) {
     return absl::FailedPreconditionError(
       absl::StrFormat("no request body allowed for %s request", method_)
     );
   }
   
-  if (headers_.contains("content-type")) {
-    if (headers_.at("content-type") != "application/json") {
+  std::string ctype_name = CaseInsensitive("Content-Type");
+  if (headers_.contains(ctype_name)) {
+    if (headers_.at(ctype_name) != "application/json") {
       return absl::FailedPreconditionError(
         absl::StrFormat("incorrect Content-Type for JSON: '%s'",
-                        headers_.at("content-type"))
+                        headers_.at(ctype_name))
       );
     }
   } else {
@@ -323,7 +326,8 @@ absl::Status ResponseWriter::WriteEnd(absl::string_view chunk) {
 }
 
 Response::Response() : head_written_(false), finished_(false),
-  version_("http/0.9"), status_(200), charset_("utf-8"), is_head_(false) {
+  version_(CaseInsensitive("HTTP/0.9")), status_(200),
+  charset_(CaseInsensitive("UTF-8")), is_head_(false) {
   // Nothing to do.
 }
 
@@ -331,7 +335,7 @@ std::shared_ptr<Response> Response::FromRequest(const Request& req) {
   std::shared_ptr<Response> res = std::make_shared<Response>();
 
   res->version_ = req.Version();
-  res->is_head_ = req.Method() == "head";
+  res->is_head_ = req.Method() == CaseInsensitive("HEAD");
 
   return res;  
 }
@@ -357,8 +361,7 @@ const std::string& Response::Version() const {
 }
 
 void Response::Version(absl::string_view version) {
-  version_ = std::string(version);
-  CaseInsensitive(&version_);
+  version_ = CaseInsensitive(version);
 }
 
 int Response::Status() const {
@@ -370,8 +373,7 @@ void Response::Status(int status) {
 }
 
 absl::StatusOr<const std::string> Response::Header(absl::string_view name) const {
-  std::string name_string(name);
-  CaseInsensitive(&name_string);
+  std::string name_string = CaseInsensitive(name);
   if (headers_.contains(name_string)) {
     return headers_.at(name_string);
   }
@@ -380,8 +382,7 @@ absl::StatusOr<const std::string> Response::Header(absl::string_view name) const
 }
 
 void Response::Header(absl::string_view name, absl::string_view value) {
-  std::string name_string(name);
-  CaseInsensitive(&name_string);
+  std::string name_string = CaseInsensitive(name);
   headers_[name_string] = std::string(value);
 }
 
@@ -402,8 +403,7 @@ const std::string& Response::Charset() const {
 }
 
 void Response::Charset(absl::string_view charset) {
-  charset_ = std::string(charset);
-  CaseInsensitive(&charset_);
+  charset_ = CaseInsensitive(charset);
 }
 
 absl::StatusOr<const Cookie> Response::Cookie(absl::string_view name) const {
@@ -457,13 +457,14 @@ absl::Status Response::WriteHead() {
     return absl::UnavailableError("response writer not set");
   }
   
-  if (!headers_.contains("content-type")) {
-    headers_.emplace("content-type",
+  std::string ctype_name = CaseInsensitive("Content-Type");
+  if (!headers_.contains(ctype_name)) {
+    headers_.emplace(ctype_name,
                      absl::StrFormat("application/octet-stream; charset=%s",
                                      charset_));
   } else {
-    headers_["content-type"] =
-      absl::StrFormat("%s; charset=%s", headers_["content-type"], charset_);
+    headers_[ctype_name] =
+      absl::StrFormat("%s; charset=%s", headers_[ctype_name], charset_);
   }
 
   absl::Status s = writer_->WriteHead(*this);
